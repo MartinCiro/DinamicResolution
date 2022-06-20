@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#Encontrar dispositivos vinculados de HDMI
+xrandr | grep "HDMI"
+
+#Pantalla primaria
+xrandr --output HDMI-1 --primary
+xrandr --output VGA-1 --primary
+
+
 xrandr -q | grep "1440x900"
 
 #Contador de tiempo invertido 11:45
