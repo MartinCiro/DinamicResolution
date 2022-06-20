@@ -11,3 +11,4 @@ xrandr --output VGA-1 --primary
 xrandr -q | grep "1440x900"
 
 #Contador de tiempo invertido 11:45
+#echo "alias chaumon='xset dpms force off'" | tee -a ~/.bashrc > /dev/null
