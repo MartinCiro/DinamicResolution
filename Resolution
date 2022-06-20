@@ -1,19 +1,46 @@
 #!/bin/bash
 
-#Encontrar dispositivos vinculados de HDMI
-xrandr | grep "HDMI"
+#Determinar si pcman esta instalado
+echo "Este script hace uso de pcmanfm-qt, si presenta error instale pcmanfm-qt"
+dpkg -s pcmanfm-qt > /dev/null 2>&1
+if [ $? -ne 0 ]
+   then
+      echo "Instalando pcmanfm-qt..."
+      sudo apt-get update -y > /dev/null 2>&1
+      sudo apt-get install pcmanfm-qt -y > /dev/null 2>&1
+else
+pcm=$(dpkg -s pcmanfm-qt | grep "Status:" | awk '{print substr($0,9, length($0) -0)}')
+echo -e "Pcmanfm-qt: \033[1;36m${pcm}\033[0m"
+fi
 
+#Encontrar dispositivos vinculados de HDMI 
+xrandr | grep "HDMI" > /dev/null 2>&1
+if [ $? -ne 0 ]
+   then
+      echo "No hay dispositivos HDMI conectados..."
+else
+HDMI=$(xrandr | grep "HDMI" | awk '{print substr($0,0, length($0) -60)}')
+echo -e "\033[1;32m${HDMI}\033[0m"
+fi
+echo "Usar HDMI como pantalla principal?"
+read s
+if [ "$s" == "y" ] || [ "$s" == "yes" ] || [ "$s" == "YES" ] || [ "$s" == "Y" ] || [ "$s" == "si" ] || [ "$s" == "sí" ] || [ "$s" == "SI" ] || [ "$s" == "SÍ" ]
+   then
+      xrandr --output HDMI-1 --auto --primary
+else
+xrandr --output VGA-1 --auto --primary
+fi
+
+xrandr --output ${HDMI} --primary
 #Pantalla primaria
 xrandr --output HDMI-1 --primary
 xrandr --output VGA-1 --primary
 
 #Desactivar esa pantalla
-xrandr --output DP1 --off
+xrandr --output HDMI-1 --off
 
 #Pantalla espejo dejando como principal la pantalla HDMI
 xrandr --output HDMI-1 --auto --primary
-
-xrandr -q | grep "1440x900"
 
 #Contador de tiempo invertido 11:45
 #echo "alias chaumon='xset dpms force off'" | tee -a ~/.bashrc > /dev/null
@@ -22,4 +49,3 @@ xrandr -q | grep "1440x900"
 pcmanfm-qt -w "$(find ~/Descargas/a.jpg -type f | shuf -n1)"
 
 #/usr/share/lxqt/themes/dark/landscape-1655742157867-7707.jpg
-#sudo apt install feh
