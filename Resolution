@@ -19,3 +19,4 @@ xrandr -q | grep "1440x900"
 #echo "alias chaumon='xset dpms force off'" | tee -a ~/.bashrc > /dev/null
 
 #/usr/share/lxqt/themes/dark/landscape-1655742157867-7707.jpg
+#sudo apt install feh
