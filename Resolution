@@ -18,5 +18,8 @@ xrandr -q | grep "1440x900"
 #Contador de tiempo invertido 11:45
 #echo "alias chaumon='xset dpms force off'" | tee -a ~/.bashrc > /dev/null
 
+#Aplicar fondo de pantalla
+pcmanfm-qt -w "$(find ~/Descargas/a.jpg -type f | shuf -n1)"
+
 #/usr/share/lxqt/themes/dark/landscape-1655742157867-7707.jpg
 #sudo apt install feh
