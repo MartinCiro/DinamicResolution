@@ -7,6 +7,11 @@ xrandr | grep "HDMI"
 xrandr --output HDMI-1 --primary
 xrandr --output VGA-1 --primary
 
+#Desactivar esa pantalla
+xrandr --output DP1 --off
+
+#Pantalla espejo dejando como principal la pantalla HDMI
+xrandr --output HDMI-1 --auto --primary
 
 xrandr -q | grep "1440x900"
 
