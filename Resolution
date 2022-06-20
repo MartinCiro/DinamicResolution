@@ -17,3 +17,5 @@ xrandr -q | grep "1440x900"
 
 #Contador de tiempo invertido 11:45
 #echo "alias chaumon='xset dpms force off'" | tee -a ~/.bashrc > /dev/null
+
+#/usr/share/lxqt/themes/dark/landscape-1655742157867-7707.jpg
