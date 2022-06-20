@@ -1,0 +1,1 @@
+xrandr -q | grep "1440x900"
