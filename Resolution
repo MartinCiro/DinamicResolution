@@ -52,4 +52,4 @@ pcmanfm-qt -w "$(find ~/Descargas/a.jpg -type f | shuf -n1)"
 #la reseolucion del sistema es tomada en suma de los primeros ccaractares y toma como segundo valor el mas grande 3120x1050 
 #xrandr | grep "VGA" | awk '{print substr($0,25, length($0) -85)}'
 #xrandr | grep "HDMI" | awk '{print substr($0,18, length($0) -81)}'
-#xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1920x1080 --pos 1440x0
+#xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --pos 1440x0
