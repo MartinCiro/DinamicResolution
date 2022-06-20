@@ -1,3 +1,5 @@
+#!/bin/bash
+
 xrandr -q | grep "1440x900"
 
 #Contador de tiempo invertido 11:45
