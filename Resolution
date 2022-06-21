@@ -76,3 +76,4 @@ pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/wallpaper2.jpg -type f | shuf 
 fi
 
 #Tiempo invertido 8h:02
+#xrandr | grep -Pw "HDMI" 
