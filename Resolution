@@ -13,43 +13,64 @@ pcm=$(dpkg -s pcmanfm-qt | grep "Status:" | awk '{print substr($0,9, length($0) 
 echo -e "Pcmanfm-qt: \033[1;36m${pcm}\033[0m"
 fi
 
+HDMI=$(xrandr | grep "HDMI" | awk '{print substr($0,0, length($0) -83)}')
+VGA=$(xrandr | grep "VGA" | awk '{print substr($0,0, length($0) -79)}')
+
+rHDMI=$(xrandr | grep "HDMI" | awk '{print substr($0,18, length($0) -81)}')
+#rHDMI=$(echo $HDMI | awk '{print substr($0,0, length($0) -0)}')
+echo $rHDMI
+
+rVGA=$(xrandr | grep "VGA" | awk '{print substr($0,17, length($0) -77)}')
+#rVGA=$(echo $VGA | awk '{print substr($0,0, length($0) -0)}')
+echo $rVGA
+
+HDMIf=$(echo $rHDMI | awk '{print substr($0,0, length($0) -3)}')
+VGAf=$( echo $rVGA| awk '{print substr($0,0, length($0) -2)}')
+
+echo "este es el nombre ${HDMI} con resolucion de: ${rHDMI} y resumida es ${HDMIf}"
+echo "este es el nombre ${VGA} con resolucion de: ${rVGA} y resumida es ${VGAf}"
+xrandr --output $VGA --mode $rVGA --pos 0x0 --output $HDMI --mode $rHDMI --pos $VGAf
+read s
+xrandr --output $HDMI --mode ${rHDMI} --pos 0x0 --output $VGA --mode $rVGA --pos $HDMIf
+
+#exit
+
+
 #Encontrar dispositivos vinculados de HDMI 
 xrandr | grep "HDMI" > /dev/null 2>&1
 if [ $? -ne 0 ]
    then
       echo "No hay dispositivos HDMI conectados..."
 else
-HDMI=$(xrandr | grep "HDMI" | awk '{print substr($0,0, length($0) -60)}')
 echo -e "\033[1;32m${HDMI}\033[0m"
 fi
-echo "Usar HDMI como pantalla principal?"
-read s
-if [ "$s" == "y" ] || [ "$s" == "yes" ] || [ "$s" == "YES" ] || [ "$s" == "Y" ] || [ "$s" == "si" ] || [ "$s" == "sí" ] || [ "$s" == "SI" ] || [ "$s" == "SÍ" ]
+echo "Usar pantalla HDMI?"
+read c
+if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] || [ "$c" == "si" ] || [ "$c" == "sí" ] || [ "$c" == "SI" ] || [ "$c" == "SÍ" ]
    then
-      xrandr --output HDMI-1 --auto --primary
+	echo "Usar HDMI como pantalla principal?"
+	read s
+	if [ "$s" == "y" ] || [ "$s" == "yes" ] || [ "$s" == "YES" ] || [ "$s" == "Y" ] || [ "$s" == "si" ] || [ "$s" == "sí" ] || [ "$s" == "SI" ] || [ "$s" == "SÍ" ]
+   	   then
+      	   	xrandr | grep "HDMI"
+      	   	xrandr --output ${HDMI} --auto --primary
+		         xrandr --output $HDMI --mode ${rHDMI} --pos 0x0 --output $VGA --mode $rVGA --pos $HDMIf
+	else
+	echo "Usar HDMI como pantalla extendida?"
+	read lk
+		if [ "$lk" == "y" ] || [ "$lk" == "yes" ] || [ "$lk" == "YES" ] || [ "$lk" == "Y" ] || [ "$lk" == "si" ] || [ "$lk" == "sí" ] || [ "$lk" == "SI" ] || [ "$lk" == "SÍ" ]
+   		   then
+		  	xrandr --output VGA-1 --auto --primary
+			xrandr --output $VGA --mode $rVGA --pos 0x0 --output $HDMI --mode $rHDMI --pos $VGAf
+			pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/landscape-1655742157867-7707.jpg -type f | shuf -n1)"
+		else
+		echo "Ok, la pantalla ${HDMI} se usará como pantalla espejo, ${VGA} es la pantalla principal"
+		xrandr --output HDMI-1 --off
+		xrandr --output HDMI-1 --auto
+		fi
+	fi
 else
-xrandr --output VGA-1 --auto --primary
+echo "Ok, Apagando HDMI"
+xrandr --output $HDMI --off
+pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/wallpaper2.jpg -type f | shuf -n1)"
 fi
-
-xrandr --output ${HDMI} --primary
-#Pantalla primaria
-xrandr --output HDMI-1 --primary
-xrandr --output VGA-1 --primary
-
-#Desactivar esa pantalla
-xrandr --output HDMI-1 --off
-
-#Pantalla espejo dejando como principal la pantalla HDMI
-xrandr --output HDMI-1 --auto --primary
-
-#Contador de tiempo invertido 11:45
-#echo "alias chaumon='xset dpms force off'" | tee -a ~/.bashrc > /dev/null
-
-#Aplicar fondo de pantalla
-pcmanfm-qt -w "$(find ~/Descargas/a.jpg -type f | shuf -n1)"
-
-#/usr/share/lxqt/themes/dark/landscape-1655742157867-7707.jpg
-#la reseolucion del sistema es tomada en suma de los primeros ccaractares y toma como segundo valor el mas grande 3120x1050 
-#xrandr | grep "VGA" | awk '{print substr($0,25, length($0) -85)}'
-#xrandr | grep "HDMI" | awk '{print substr($0,18, length($0) -81)}'
-#xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --pos 1440x0
