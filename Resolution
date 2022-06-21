@@ -74,3 +74,5 @@ echo "Ok, Apagando HDMI"
 xrandr --output $HDMI --off
 pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/wallpaper2.jpg -type f | shuf -n1)"
 fi
+
+#Tiempo invertido 8h:02
