@@ -77,3 +77,24 @@ fi
 
 #Tiempo invertido 8h:02
 #xrandr | grep -Pw "HDMI" 
+#xdpyinfo | grep 'dimensions:'
+#xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+#xrandr | grep '*' | sort -r | tail -n 1 | awk '{print substr($0,4, length($0) -13)}'
+#arriba de vga1 xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --above VGA-1 > /dev/null 2>&1
+#abajo de vga1 xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --below VGA-1 > /dev/null 2>&1
+#izquierda de vga1 xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --left-of VGA-1 > /dev/null 2>&1
+#derecha de vga1 xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --right-of VGA-1 > /dev/null 2>&1
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
