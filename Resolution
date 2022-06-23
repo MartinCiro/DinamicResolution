@@ -1,6 +1,6 @@
 #!/bin/bash
-
-#Determinar si pcman esta instalado
+xrandr --output $HDMI --off
+xrandr --output HDMI-1 --auto
 echo "Este script hace uso de pcmanfm-qt, si presenta error instale pcmanfm-qt"
 dpkg -s pcmanfm-qt > /dev/null 2>&1
 if [ $? -ne 0 ]
@@ -13,30 +13,19 @@ pcm=$(dpkg -s pcmanfm-qt | grep "Status:" | awk '{print substr($0,9, length($0) 
 echo -e "Pcmanfm-qt: \033[1;36m${pcm}\033[0m"
 fi
 
-HDMI=$(xrandr | grep "HDMI" | awk '{print substr($0,0, length($0) -83)}')
-VGA=$(xrandr | grep "VGA" | awk '{print substr($0,0, length($0) -79)}')
+HDMI=$(xrandr --current | grep -w "HDMI" | head -c 6)
+VGA=$(xrandr --current | grep -w "VGA" | head -c 5)
 
-rHDMI=$(xrandr | grep "HDMI" | awk '{print substr($0,18, length($0) -81)}')
-#rHDMI=$(echo $HDMI | awk '{print substr($0,0, length($0) -0)}')
-echo $rHDMI
+rHDMI=$(xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -0)}' | head -c 9)
 
-rVGA=$(xrandr | grep "VGA" | awk '{print substr($0,17, length($0) -77)}')
-#rVGA=$(echo $VGA | awk '{print substr($0,0, length($0) -0)}')
-echo $rVGA
+rVGA=$(xrandr | grep '*' | sort -r | tail -n 1 | awk '{print substr($0,4, length($0) -0)}'| head -c 9)
 
-HDMIf=$(echo $rHDMI | awk '{print substr($0,0, length($0) -3)}')
-VGAf=$( echo $rVGA| awk '{print substr($0,0, length($0) -2)}')
+if [ $rHDMI == $rVGA ]
+   then
+      echo "No se ha detectado ningun monitor extermo. Conecte y vuelva a ejecutar"
+       
+fi
 
-echo "este es el nombre ${HDMI} con resolucion de: ${rHDMI} y resumida es ${HDMIf}"
-echo "este es el nombre ${VGA} con resolucion de: ${rVGA} y resumida es ${VGAf}"
-xrandr --output $VGA --mode $rVGA --pos 0x0 --output $HDMI --mode $rHDMI --pos $VGAf
-read s
-xrandr --output $HDMI --mode ${rHDMI} --pos 0x0 --output $VGA --mode $rVGA --pos $HDMIf
-
-#exit
-
-
-#Encontrar dispositivos vinculados de HDMI 
 xrandr | grep "HDMI" > /dev/null 2>&1
 if [ $? -ne 0 ]
    then
@@ -44,38 +33,257 @@ if [ $? -ne 0 ]
 else
 echo -e "\033[1;32m${HDMI}\033[0m"
 fi
+
 echo "Usar pantalla HDMI?"
 read c
-if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] || [ "$c" == "si" ] || [ "$c" == "sí" ] || [ "$c" == "SI" ] || [ "$c" == "SÍ" ]
+if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] || [ "$c" == "si" ] || [ "$c" == "sí" ] || [ "$c" == "SI" ] || [ "$c" == "SÍ" ] || [ "$c" == "s" ] || [ "$c" == "S" ]
    then
 	echo "Usar HDMI como pantalla principal?"
 	read s
-	if [ "$s" == "y" ] || [ "$s" == "yes" ] || [ "$s" == "YES" ] || [ "$s" == "Y" ] || [ "$s" == "si" ] || [ "$s" == "sí" ] || [ "$s" == "SI" ] || [ "$s" == "SÍ" ]
+	
+	if [ "$s" == "y" ] || [ "$s" == "yes" ] || [ "$s" == "YES" ] || [ "$s" == "Y" ] || [ "$s" == "si" ] || [ "$s" == "sí" ] || [ "$s" == "SI" ] || [ "$s" == "SÍ" ] || [ "$s" == "s" ] || [ "$s" == "S" ]
    	   then
-      	   	xrandr | grep "HDMI"
-      	   	xrandr --output ${HDMI} --auto --primary
-		         xrandr --output $HDMI --mode ${rHDMI} --pos 0x0 --output $VGA --mode $rVGA --pos $HDMIf
-	else
-	echo "Usar HDMI como pantalla extendida?"
+   	   
+   	   echo "arriba?"
+   	   read up
+   	   	if [ "$up" == "y" ] || [ "$up" == "yes" ] || [ "$up" == "YES" ] || [ "$up" == "Y" ] || [ "$up" == "si" ] || [ "$up" == "sí" ] || [ "$up" == "SI" ] || [ "$up" == "SÍ" ] || [ "$up" == "s" ] || [ "$up" == "S" ]
+   	   	then
+   	   	pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/above.png -type f | shuf -n1)"
+   	   	xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --above $HDMI > /dev/null 2>&1
+   	   		if [ $? -ne 0 ]
+   	   		then
+   	   		echo "No hay dispositivos HDMI conectados..."
+			pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/above.png -type f | shuf -n1)"
+			xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --above $HDMI > /dev/null 2>&1
+			else
+			echo "El monitor tiene una resolucion correcta? si/no"
+			read mn
+				if [ "$mn" == "n" ] || [ "$mn" == "no" ] || [ "$mn" == "No" ] || [ "$mn" == "NO" ] || [ "$lk" == "not" ] || [ "$lk" == "NOT" ] || [ "$Not" == "N" ]
+				then
+					xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+					echo "Ingrese la resolucion"
+					read res
+					pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/above.png -type f | shuf -n1)"
+					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --above $HDMI > /dev/null 2>&1
+					echo "Echo resoluccion seleccionada"
+					 
+				else
+				echo "Aplicado..."
+				 
+				fi				
+            fi
+        else
+        echo "abajo?"
+        read down
+        if [ "$down" == "y" ] || [ "$down" == "yes" ] || [ "$down" == "YES" ] || [ "$down" == "Y" ] || [ "$down" == "si" ] || [ "$down" == "sí" ] || [ "$down" == "SI" ] || [ "$down" == "SÍ" ] || [ "$down" == "s" ] || [ "$down" == "S" ]
+   	   	then
+   	   	pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/down.png -type f | shuf -n1)"
+		xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --below $HDMI > /dev/null 2>&1
+   	   		if [ $? -ne 0 ]
+   	   		then
+   	   		echo "No hay dispositivos HDMI conectados..."
+			pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/down.png -type f | shuf -n1)"
+			xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --below $HDMI > /dev/null 2>&1
+			else
+			echo "El monitor tiene una resolucion correcta? si/no"
+			read mn
+				if [ "$mn" == "n" ] || [ "$mn" == "no" ] || [ "$mn" == "No" ] || [ "$mn" == "NO" ] || [ "$lk" == "not" ] || [ "$lk" == "NOT" ] || [ "$Not" == "N" ]
+				then
+					xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+					echo "Ingrese la resolucion"
+					read res
+					pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/down.png -type f | shuf -n1)"
+					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --below $HDMI > /dev/null 2>&1
+					echo "Echo resoluccion seleccionada"
+					 
+				else
+				echo "Aplicado..."
+				 
+				fi				
+            fi
+        else
+        echo "Izquierda?"
+   	   	read left
+   	   	if [ "$left" == "y" ] || [ "$left" == "yes" ] || [ "$left" == "YES" ] || [ "$left" == "Y" ] || [ "$left" == "si" ] || [ "$left" == "sí" ] || [ "$left" == "SI" ] || [ "$left" == "SÍ" ] || [ "$left" == "s" ] || [ "$left" == "S" ]
+   	   	then
+   	   	pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/left.png -type f | shuf -n1)"
+   	   	xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --left-of $HDMI > /dev/null 2>&1
+   	   		if [ $? -ne 0 ]
+   	   		then
+   	   		echo "No hay dispositivos HDMI conectados..."
+			pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/left.png -type f | shuf -n1)"
+   	   		xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --left-of $HDMI > /dev/null 2>&1
+			else
+			echo "El monitor tiene una resolucion correcta? si/no"
+			read mn
+				if [ "$mn" == "n" ] || [ "$mn" == "no" ] || [ "$mn" == "No" ] || [ "$mn" == "NO" ] || [ "$lk" == "not" ] || [ "$lk" == "NOT" ] || [ "$Not" == "N" ]
+				then
+					xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+					echo "Ingrese la resolucion"
+					read res
+					pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/above.png -type f | shuf -n1)"
+					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --left-of $HDMI > /dev/null 2>&1
+					echo "Echo resoluccion seleccionada"
+					 
+				else
+				echo "Aplicado..."
+				 
+				fi				
+            fi
+        else
+   	   	pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/right.png -type f | shuf -n1)"
+   	   	xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --right-of $HDMI > /dev/null 2>&1
+   	   		if [ $? -ne 0 ]
+   	   		then
+   	   		echo "No hay dispositivos HDMI conectados..."
+			pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/right.png -type f | shuf -n1)"
+			xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --right-of $HDMI > /dev/null 2>&1
+			else
+			echo "El monitor tiene una resolucion correcta? si/no"
+			read mn
+				if [ "$mn" == "n" ] || [ "$mn" == "no" ] || [ "$mn" == "No" ] || [ "$mn" == "NO" ] || [ "$lk" == "not" ] || [ "$lk" == "NOT" ] || [ "$Not" == "N" ]
+				then
+					xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+					echo "Ingrese la resolucion"
+					read res
+					pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/right.png -type f | shuf -n1)"
+					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --right-of $HDMI > /dev/null 2>&1
+					echo "Echo resoluccion seleccionada"
+					 
+				else
+				echo "Aplicado..."
+				 
+				fi				
+       	fi
+       	fi
+       	fi
+       	fi
+    else
+    echo "Usar HDMI como pantalla extendida?"
 	read lk
-		if [ "$lk" == "y" ] || [ "$lk" == "yes" ] || [ "$lk" == "YES" ] || [ "$lk" == "Y" ] || [ "$lk" == "si" ] || [ "$lk" == "sí" ] || [ "$lk" == "SI" ] || [ "$lk" == "SÍ" ]
-   		   then
-		  	xrandr --output VGA-1 --auto --primary
-			xrandr --output $VGA --mode $rVGA --pos 0x0 --output $HDMI --mode $rHDMI --pos $VGAf
-			pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/landscape-1655742157867-7707.jpg -type f | shuf -n1)"
-		else
-		echo "Ok, la pantalla ${HDMI} se usará como pantalla espejo, ${VGA} es la pantalla principal"
-		xrandr --output HDMI-1 --off
-		xrandr --output HDMI-1 --auto
+		if [ "$lk" == "y" ] || [ "$lk" == "yes" ] || [ "$lk" == "YES" ] || [ "$lk" == "Y" ] || [ "$lk" == "si" ] || [ "$lk" == "sí" ] || [ "$lk" == "SI" ] || [ "$lk" == "SÍ" ] || [ "$lk" == "s" ] || [ "$lk" == "S" ] || [ "$lk" == "Si" ]  || [ "$lk" == "Sí" ]
+   		then
+		  	xrandr --output $VGA --auto --primary
+			echo "arriba?"
+   	   		read up
+   	   		if [ "$up" == "y" ] || [ "$up" == "yes" ] || [ "$up" == "YES" ] || [ "$up" == "Y" ] || [ "$up" == "si" ] || [ "$up" == "sí" ] || [ "$up" == "SI" ] || [ "$up" == "SÍ" ] || [ "$up" == "s" ] || [ "$up" == "S" ]
+   	   		then
+   	   		pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/above.png -type f | shuf -n1)"
+   	   		xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --above $HDMI > /dev/null 2>&1
+   	   		if [ $? -ne 0 ]
+   	   		then
+   	   		echo "No hay dispositivos HDMI conectados..."
+			pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/above.png -type f | shuf -n1)"
+			xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --above $HDMI > /dev/null 2>&1
+			else
+			echo "El monitor tiene una resolucion correcta? si/no"
+			read mn
+				if [ "$mn" == "n" ] || [ "$mn" == "no" ] || [ "$mn" == "No" ] || [ "$mn" == "NO" ] || [ "$lk" == "not" ] || [ "$lk" == "NOT" ] || [ "$Not" == "N" ]
+				then
+					xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+					echo "Ingrese la resolucion"
+					read res
+					pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/above.png -type f | shuf -n1)"
+					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --above $HDMI > /dev/null 2>&1
+					echo "Echo resoluccion seleccionada"
+					 
+				else
+				echo "Aplicado..."
+				 
+				fi
+   	   		fi
+   	   		else
+   	   		echo "abajo?"
+   	   		read down
+   	   		if [ "$down" == "y" ] || [ "$down" == "yes" ] || [ "$down" == "YES" ] || [ "$down" == "Y" ] || [ "$down" == "si" ] || [ "$down" == "sí" ] || [ "$down" == "SI" ] || [ "$down" == "SÍ" ] || [ "$down" == "s" ] || [ "$down" == "S" ]
+   	   		then
+   	   		pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/down.png -type f | shuf -n1)"
+   	   		xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --below $HDMI > /dev/null 2>&1
+   	   			if [ $? -ne 0 ]
+   	   			then
+   	   			echo "No hay dispositivos HDMI conectados..."
+				pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/down.png -type f | shuf -n1)"
+				xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --below $HDMI > /dev/null 2>&1
+				else
+				echo "El monitor tiene una resolucion correcta? si/no"
+				read mn
+					if [ "$mn" == "n" ] || [ "$mn" == "no" ] || [ "$mn" == "No" ] || [ "$mn" == "NO" ] || [ "$lk" == "not" ] || [ "$lk" == "NOT" ] || [ "$Not" == "N" ]
+					then
+						xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+						echo "Ingrese la resolucion"
+						read res
+						pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/down.png -type f | shuf -n1)"
+						xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --below $HDMI > /dev/null 2>&1
+						echo "Echo resoluccion seleccionada"
+					else
+					echo "Aplicado..."
+					fi
+   	   			fi
+   	   		else
+   	   		echo "Izquierda?"
+   	   		read left
+   	   		if [ "$left" == "y" ] || [ "$left" == "yes" ] || [ "$left" == "YES" ] || [ "$left" == "Y" ] || [ "$left" == "si" ] || [ "$left" == "sí" ] || [ "$left" == "SI" ] || [ "$left" == "SÍ" ] || [ "$left" == "s" ] || [ "$left" == "S" ]
+   	   		then
+   	   		pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/left.png -type f | shuf -n1)"
+   	   		xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --left-of $HDMI > /dev/null 2>&1
+   	   			if [ $? -ne 0 ]
+   	   			then
+   	   			echo "No hay dispositivos HDMI conectados..."
+				pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/left.png -type f | shuf -n1)"
+				xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --left-of $HDMI > /dev/null 2>&1
+				else
+				echo "El monitor tiene una resolucion correcta? si/no"
+				read mn
+					if [ "$mn" == "n" ] || [ "$mn" == "no" ] || [ "$mn" == "No" ] || [ "$mn" == "NO" ] || [ "$lk" == "not" ] || [ "$lk" == "NOT" ] || [ "$Not" == "N" ]
+					then
+						xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+						echo "Ingrese la resolucion"
+						read res
+						pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/left.png -type f | shuf -n1)"
+						xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --left-of $HDMI > /dev/null 2>&1
+						echo "Echo resoluccion seleccionada"
+					else
+					echo "Aplicado..."
+					fi
+   	   			fi
+   	   		else
+   	   		echo "Por defecto: ${HDMI} derecha"
+   	   		pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/right.jpg -type f | shuf -n1)"
+   	   		xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --left-of $HDMI > /dev/null 2>&1
+   	   		if [ $? -ne 0 ]
+   	   			then
+   	   			echo "No hay dispositivos HDMI conectados..."
+				pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/left.png -type f | shuf -n1)"
+				xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $rVGA --left-of $HDMI > /dev/null 2>&1
+				else
+				echo "El monitor tiene una resolucion correcta? si/no"
+				read mn
+					if [ "$mn" == "n" ] || [ "$mn" == "no" ] || [ "$mn" == "No" ] || [ "$mn" == "NO" ] || [ "$lk" == "not" ] || [ "$lk" == "NOT" ] || [ "$Not" == "N" ]
+					then
+						xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
+						echo "Ingrese la resolucion"
+						read res
+						pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/left.png -type f | shuf -n1)"
+						xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --left-of $HDMI > /dev/null 2>&1
+						echo "Echo resoluccion seleccionada"
+					else
+					echo "Aplicado..."
+					fi
+   	   			fi	
+   	   		fi	
+   	   		fi
+   	   		fi
+   	   	
 		fi
 	fi
 else
 echo "Ok, Apagando HDMI"
 xrandr --output $HDMI --off
-pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/wallpaper2.jpg -type f | shuf -n1)"
+pcmanfm-qt -w "$(find /usr/share/lxqt/themes/dark/wallpaper2.jpg -type f | shuf -n1)"  
 fi
 
-#Tiempo invertido 8h:02
+
+#Tiempo invertido 72h:02
 #xrandr | grep -Pw "HDMI" 
 #xdpyinfo | grep 'dimensions:'
 #xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
