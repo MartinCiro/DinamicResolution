@@ -24,7 +24,6 @@ rVGA=$(xrandr | grep '*' | sort -r | tail -n 1 | awk '{print substr($0,4, length
 if [ $rHDMI == $rVGA ]
    then
       echo "No se ha detectado ningun monitor extermo. Conecte y vuelva a ejecutar"
-       
 fi
 
 xrandr | grep "HDMI" > /dev/null 2>&1
@@ -41,10 +40,8 @@ if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] 
    then
 	echo "Usar HDMI como pantalla principal?"
 	read s
-	
 	if [ "$s" == "y" ] || [ "$s" == "yes" ] || [ "$s" == "YES" ] || [ "$s" == "Y" ] || [ "$s" == "si" ] || [ "$s" == "sí" ] || [ "$s" == "SI" ] || [ "$s" == "SÍ" ] || [ "$s" == "s" ] || [ "$s" == "S" ]
    	   then
-   	   
    	   echo "arriba?"
    	   read up
    	   	if [ "$up" == "y" ] || [ "$up" == "yes" ] || [ "$up" == "YES" ] || [ "$up" == "Y" ] || [ "$up" == "si" ] || [ "$up" == "sí" ] || [ "$up" == "SI" ] || [ "$up" == "SÍ" ] || [ "$up" == "s" ] || [ "$up" == "S" ]
@@ -67,11 +64,9 @@ if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] 
 					pcmanfm-qt -w "$(find $ubicacion/above.png -type f | shuf -n1)"
 					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --above $HDMI > /dev/null 2>&1
 					echo "Echo resoluccion seleccionada"
-					 
 				else
 				echo "Aplicado..."
-				 
-				fi				
+				fi
             fi
         else
         echo "abajo?"
@@ -96,11 +91,9 @@ if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] 
 					pcmanfm-qt -w "$(find $ubicacion/down.png -type f | shuf -n1)"
 					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --below $HDMI > /dev/null 2>&1
 					echo "Echo resoluccion seleccionada"
-					 
 				else
 				echo "Aplicado..."
-				 
-				fi				
+				fi
             fi
         else
         echo "Izquierda?"
@@ -125,11 +118,9 @@ if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] 
 					pcmanfm-qt -w "$(find $ubicacion/above.png -type f | shuf -n1)"
 					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --left-of $HDMI > /dev/null 2>&1
 					echo "Echo resoluccion seleccionada"
-					 
 				else
 				echo "Aplicado..."
-				 
-				fi				
+				fi
             fi
         else
    	   	pcmanfm-qt -w "$(find $ubicacion/right.png -type f | shuf -n1)"
@@ -150,11 +141,9 @@ if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] 
 					pcmanfm-qt -w "$(find $ubicacion/right.png -type f | shuf -n1)"
 					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --right-of $HDMI > /dev/null 2>&1
 					echo "Echo resoluccion seleccionada"
-					 
 				else
 				echo "Aplicado..."
-				 
-				fi				
+				fi
        	fi
        	fi
        	fi
@@ -187,10 +176,8 @@ if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] 
 					pcmanfm-qt -w "$(find $ubicacion/above.png -type f | shuf -n1)"
 					xrandr --output $HDMI --mode $rHDMI --pos 0x0 --output $VGA --mode $res --above $HDMI > /dev/null 2>&1
 					echo "Echo resoluccion seleccionada"
-					 
 				else
 				echo "Aplicado..."
-				 
 				fi
    	   		fi
    	   		else
@@ -270,40 +257,16 @@ if [ "$c" == "y" ] || [ "$c" == "yes" ] || [ "$c" == "YES" ] || [ "$c" == "Y" ] 
 					else
 					echo "Aplicado..."
 					fi
-   	   			fi	
-   	   		fi	
+   	   			fi
    	   		fi
    	   		fi
-   	   	
+   	   		fi
 		fi
 	fi
 else
 echo "Ok, Apagando HDMI"
 xrandr --output $HDMI --off
-pcmanfm-qt -w "$(find $ubicacion/wallpaper2.jpg -type f | shuf -n1)"  
+pcmanfm-qt -w "$(find $ubicacion/wallpaper2.jpg -type f | shuf -n1)"
 fi
 
-
-#Tiempo invertido 72h:02
-#xrandr | grep -Pw "HDMI" 
-#xdpyinfo | grep 'dimensions:'
-#xrandr | grep '*' | tail -n 1 | sort -r | awk '{print substr($0,4, length($0) -13)}'
-#xrandr | grep '*' | sort -r | tail -n 1 | awk '{print substr($0,4, length($0) -13)}'
-#arriba de vga1 xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --above VGA-1 > /dev/null 2>&1
-#abajo de vga1 xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --below VGA-1 > /dev/null 2>&1
-#izquierda de vga1 xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --left-of VGA-1 > /dev/null 2>&1
-#derecha de vga1 xrandr --output VGA-1 --mode 1440x900 --pos 0x0 --output HDMI-1 --mode 1680x1050 --right-of VGA-1 > /dev/null 2>&1
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+#Tiempo invertido 76h:35m
