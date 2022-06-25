@@ -269,4 +269,6 @@ xrandr --output $HDMI --off
 pcmanfm-qt -w "$(find $ubicacion/wallpaper2.jpg -type f | shuf -n1)"
 fi
 
+#pip list |  sed '$!N;$!D' simulated tail
+
 #Tiempo invertido 76h:35m
